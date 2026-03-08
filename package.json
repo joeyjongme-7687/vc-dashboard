@@ -9,20 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
-    "@supabase/supabase-js": "^2.48.1",
-    "date-fns": "^4.1.0",
-    "lucide-react": "^0.474.0",
     "next": "15.1.7",
-    "papaparse": "^5.5.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "recharts": "^2.15.1"
+    "lucide-react": "0.474.0",
+    "recharts": "2.15.1",
+    "date-fns": "4.1.0",
+    "@google/generative-ai": "0.21.0",
+    "@supabase/supabase-js": "2.48.1",
+    "papaparse": "5.5.2"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.0",
-    "eslint": "^9.18.0",
-    "eslint-config-next": "15.1.7",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "4.0.0",
+    "@tailwindcss/postcss": "4.0.0",
+    "postcss": "8.5.1",
+    "autoprefixer": "10.4.20",
+    "eslint": "9.18.0",
+    "eslint-config-next": "15.1.7"
   }
 }
