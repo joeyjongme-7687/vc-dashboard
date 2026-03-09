@@ -181,7 +181,7 @@ export default function Dashboard() {
   // AI Insights Generator
   const generateAIInsights = async () => {
     if (!aiApiKey || aiApiKey === "your_api_key_here") {
-      alert("Missing Gemini API Key. Please add it to Vercel Environment Variables.");
+      alert("Missing Gemini API Key. Please make sure NEXT_PUBLIC_GEMINI_API_KEY is saved in Vercel Environment Variables and the latest deployment has finished building.");
       return;
     }
 
