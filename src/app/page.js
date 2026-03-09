@@ -44,7 +44,7 @@ export default function Dashboard() {
   const [selectedChannel, setSelectedChannel] = useState('All');
 
   // AI States (Optimized for 2026 Free Tier)
-  const [selectedModel, setSelectedModel] = useState('gemini-3.1-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-1.5-pro');
   const [aiInsights, setAiInsights] = useState(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
@@ -267,9 +267,8 @@ export default function Dashboard() {
           
             <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
                {[
-                 { id: 'gemini-3.1-pro', label: '3.1 Pro' },
-                 { id: 'gemini-3.1-flash', label: '3.1 Flash' },
-                 { id: 'gemini-3.1-flash-lite', label: '3.1 Flash-Lite' }
+                 { id: 'gemini-1.5-pro', label: '1.5 Pro' },
+                 { id: 'gemini-2.0-flash-exp', label: '2.0 Flash' }
                ].map(m => (
                  <button 
                   key={m.id}
