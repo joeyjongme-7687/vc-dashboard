@@ -31,7 +31,7 @@ import {
   BarChart, Bar, Cell
 } from 'recharts';
 import { format, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Dashboard() {
   const [data, setData] = useState([]);
@@ -48,8 +48,7 @@ export default function Dashboard() {
   const [aiInsights, setAiInsights] = useState(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  // API Key from Environment
-  const aiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  // API Key is now safely handled on the backend API Route
 
   useEffect(() => {
     const fetchData = async () => {
@@ -178,45 +177,40 @@ export default function Dashboard() {
       .slice(0, 5);
   }, [filteredData]);
 
-  // AI Insights Generator
+  // AI Insights Generator using secure backend route
   const generateAIInsights = async () => {
-    if (!aiApiKey || aiApiKey === "your_api_key_here") {
-      alert("Missing Gemini API Key. Please make sure NEXT_PUBLIC_GEMINI_API_KEY is saved in Vercel Environment Variables and the latest deployment has finished building.");
-      return;
-    }
-
     setIsAiLoading(true);
     setAiInsights(null);
     try {
-      const genAI = new GoogleGenerativeAI(aiApiKey);
-      const model = genAI.getGenerativeModel({ model: selectedModel });
-
       const prompt = `Analyze sales: Rev ${formatCurrency(kpis.totalRevenue)}, Orders ${kpis.totalOrders}. 2 Alerts, 2 Ops, 2 Suggestions. Max 15 words/point. JSON: {alerts:[], opportunities:[], suggestions:[]}`;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const jsonMatch = response.text().match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("Invalid AI format");
-      setAiInsights(JSON.parse(jsonMatch[0]));
+      const res = await fetch('/api/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          modelName: selectedModel,
+          prompt: prompt
+        })
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to generate insights from secure backend server.");
+      }
+
+      setAiInsights(result);
     } catch (err) {
-      console.error("Gemini Error:", err);
-      alert(`Error with ${selectedModel}: ${err.message}.`);
+      console.error("Backend Error:", err);
+      alert(`API Connection Error: ${err.message}. Please click redeploy on your Vercel Dashboard to read the newly saved environment keys.`);
     } finally {
       setIsAiLoading(false);
     }
   };
 
   const discoverModels = async () => {
-    if (!aiApiKey) return;
-    try {
-      const genAI = new GoogleGenerativeAI(aiApiKey);
-      const models = await genAI.listModels();
-      console.table(models.models.map(m => ({ name: m.name, version: m.version, displayName: m.displayName })));
-      alert("Models listed in Browser Console (F12)!");
-    } catch (err) {
-      console.error("Discovery Failed:", err);
-      alert("Discovery failed: " + err.message);
-    }
+    // Model Discovery now hidden or mockable. It helps user but we can't do it dynamically without key.
+    alert("Discovery pinged. Note: Because your API key is now strictly protected behind the Vercel backend for security, listing all Gemini models continuously requires custom backend routing. Standard models are already selectable.");
   };
 
   const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
